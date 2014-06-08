@@ -100,8 +100,10 @@ class SearchableBehavior extends CActiveRecordBehavior
     public function populateElasticDocument(DocumentInterface $document)
     {
         $document->setId($this->owner->getPrimaryKey());
-        foreach($this->owner->attributeNames() as $name)
+        foreach($this->owner->attributeNames() as $name) {
+            if($this->owner->{$name} instanceof \CDbExpression) continue;
             $document->{$name} = $this->owner->{$name};
+        }
     }
 
     /**
