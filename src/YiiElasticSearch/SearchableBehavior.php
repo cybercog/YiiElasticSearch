@@ -26,6 +26,11 @@ class SearchableBehavior extends CActiveRecordBehavior
     public $elasticAutoIndex = true;
 
     /**
+     * @var array List of attributes to populate ElasticDocument
+     */
+    public $attributeNames = array();
+
+    /**
      * @var Connection the elasticsearch connection to use for this document
      */
     protected $_elasticConnection;
@@ -100,9 +105,17 @@ class SearchableBehavior extends CActiveRecordBehavior
     public function populateElasticDocument(DocumentInterface $document)
     {
         $document->setId($this->owner->getPrimaryKey());
-        foreach($this->owner->attributeNames() as $name) {
-            if($this->owner->{$name} instanceof \CDbExpression) continue;
-            $document->{$name} = $this->owner->{$name};
+        if (empty($this->attributeNames)) {
+            foreach($this->owner->attributeNames() as $name) {
+                if($this->owner->{$name} instanceof \CDbExpression) continue;
+                $document->{$name} = $this->owner->{$name};
+            }
+        }
+        else {
+            foreach ($this->attributeNames as $alias => $name) {
+                if($this->owner->{$name} instanceof \CDbExpression) continue;
+                $document->{$alias} = $this->owner->{$name};
+            }
         }
     }
 

@@ -47,7 +47,17 @@ class MyModel extends CActiveRecord
             'searchable' => array(
                 'class' => 'YiiElasticSearch\SearchableBehavior',
             ),
+            'attributeNames' => array(
+                'title' => 'title',
+                'content' => 'content',
+                'tags' => 'tagsList',
+            ),
         );
+    }
+
+    public function getTagsList()
+    {
+        return $this->tags->toString();
     }
 }
 ```
